@@ -3,6 +3,7 @@ import Dragula from 'dragula';
 import 'dragula/dist/dragula.css';
 import Swimlane from './Swimlane';
 import './Board.css';
+// import Card from './Card';
 
 export default class Board extends React.Component {
   constructor(props) {
@@ -13,6 +14,7 @@ export default class Board extends React.Component {
         backlog: clients.filter(client => !client.status || client.status === 'backlog'),
         inProgress: clients.filter(client => client.status && client.status === 'in-progress'),
         complete: clients.filter(client => client.status && client.status === 'complete'),
+        
       }
     }
     this.swimlanes = {
@@ -55,6 +57,40 @@ export default class Board extends React.Component {
       <Swimlane name={name} clients={clients} dragulaRef={ref}/>
     );
   }
+
+  // This is the code which has been added by me, Brian Ross
+
+  componentDidMount() {
+    let container = [this.swimlanes.backlog.current, 
+      this.swimlanes.inProgress.current, 
+      this.swimlanes.complete.current]
+    
+
+    
+    
+    Dragula([container[0], container[1], container[2]]).on('drop', function(el, target, source, sibling) {
+      console.log(typeof(sibling))
+      if (Object.is(sibling, null)) {
+        alert("Please do not add a card to the bottom")
+        
+      }
+      else if (sibling.getAttribute("data-status") !== null) {
+      el.setAttribute("data-status", sibling.getAttribute("data-status"))
+      el.setAttribute("class", sibling.getAttribute("class"))
+      }
+      // else if (sibling.getAttribute("data-status") === null) {
+      //   revertOnSpill: true
+      // }
+    
+    })}
+
+//end of code written by me, Brian Ross
+
+
+  
+    
+
+  
 
   render() {
     return (
